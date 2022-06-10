@@ -5,6 +5,10 @@ const chapterSchema  = new mongoose.Schema({
         type: String,
         required: true
     },
+    estimatedHours: {
+        type: String,
+        required: true
+    },
     items: {
         type: Array,
         default: [],
@@ -12,4 +16,4 @@ const chapterSchema  = new mongoose.Schema({
     }
 });
 
-module.exports = mongoose.Model("chapter", chapterSchema);
+module.exports = mongoose.model("chapter", chapterSchema);

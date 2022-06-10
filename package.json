@@ -10,9 +10,11 @@
     "config": "^3.3.7",
     "cors": "^2.8.5",
     "express": "^4.18.1",
+    "googleapis": "^101.0.0",
     "helmet": "^5.1.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.3.5",
-    "nodemon": "^2.0.16"
+    "nodemon": "^2.0.16",
+    "stream": "^0.0.2"
   }
 }

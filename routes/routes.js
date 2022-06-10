@@ -1,6 +1,7 @@
 const userControllers = require('../controllers/userController');
 const instructorControllers = require('../controllers/instructorController');
 const courseControllers = require('../controllers/courseController');
+const videoItemControllers = require('../controllers/videoItemController');
 const express = require('express');
 const router = express.Router();
 const auth_middleware = require('../middleware/auth');
@@ -81,5 +82,11 @@ router.get('/coupon/:id', courseControllers.getCoupon);
 router.put('/update_coupon/:id', courseControllers.updateCoupon);
 
 router.delete('/delete_coupon/:id', courseControllers.deleteCoupon);
+
+// videoItem endpoints
+
+router.get('/videoItems', videoItemControllers.getAllVideoItems);
+
+router.get('/videoItem/:id', videoItemControllers.getVideoItemById);
 
 module.exports = router;

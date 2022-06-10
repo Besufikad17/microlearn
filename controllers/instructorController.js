@@ -1,5 +1,7 @@
 const Instructor = require('../models/instructorModel');
 const Course = require('../models/courseModel');
+const Chapter = require('../models/chapterModel');
+const VideoItem = require('../models/videoItemModel');
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -184,6 +186,23 @@ instructorControllers.addCourse = async(req, res) => {
 
     Instructor.findOne({ _id: { $in: mongoose.Types.ObjectId(req.params.id) } }, function (err, instructor) {
         if (instructor) {
+            const chapters = req.body.chapters;
+            var count = 0;
+            chapters.map(chapter =>{
+                const {title, estimatedHours, video_links} = chapter;
+                const vid_title = title + ' ' + count;
+                const newChapter = new Chapter(chapter);
+               
+                video_links.map(video_link => {
+                    const url = video_link;
+                    const chapter = title;
+                    console.log(vid_title, title, video_link);
+                    const newVideoItems = new VideoItem({vid_title, chapter, url});
+                    newVideoItems.save();
+                })
+                newChapter.save();
+                count++;
+            })
 
             const  newCourse = new Course(req.body)
             newCourse.save();

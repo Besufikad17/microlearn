@@ -7,9 +7,9 @@ const auth = require('./auth');
 
 // user endpoints
 
-router.post('/add', userControllers.add);
+router.post('/user_signup', userControllers.add);
 
-router.post('/login', userControllers.login);
+router.post('/user_login', userControllers.login);
 
 router.get('/users', userControllers.getAllUsers);
 
@@ -19,7 +19,7 @@ router.get('/user/:id', userControllers.getUserById);
 
 router.get('/get_user', userControllers.getUserByName);
 
-router.put('/update/:id', userControllers.updateUser);
+router.put('/update_user/:id', userControllers.updateUser);
 
 router.delete('/remove/:id', userControllers.deleteUser);
 
@@ -34,20 +34,31 @@ router.put('/drop_course/:id', userControllers.dropCourse);
 
 // instructor endpoints
 
-router.post('/add', instructorControllers.add);
+router.post('/instructor_signup', instructorControllers.add);
 
-router.post('/login', instructorControllers.login);
+router.post('/instructor_login', instructorControllers.login);
+
+router.post('/courses_instructor/:id', instructorControllers.addCourse);
 
 router.get('/instructors', instructorControllers.getAllinstructors);
 
-//router.post('/instructor', auth_middleware.auth, auth.getCurrentUser);
-
 router.get('/instructor/:id', instructorControllers.getinstructorById);
 
-router.get('/get_instructor', instructorControllers.getinstructorByName);
+router.get('/instructor', instructorControllers.getinstructorByName);
 
-router.put('/update/:id', instructorControllers.updateinstructor);
+router.get('/instructor/courses/:id', instructorControllers.getUploadedCourses);
 
-router.delete('/remove/:id', instructorControllers.deleteinstructor);
+router.get('/instructor/course/:id', instructorControllers.getUploadedCourseByTitle);
+
+router.get('/instructor/course_id/:id', instructorControllers.getUploadedCourseById);
+
+// //router.post('/instructor', auth_middleware.auth, auth.getCurrentUser);
+
+router.put('/update_instructor/:id', instructorControllers.updateinstructor);
+
+router.put('/instructor/update_course/:id', instructorControllers.updateCourse);
+
+router.delete('/remove_instructor/:id', instructorControllers.deleteinstructor);
+
 
 module.exports = router;

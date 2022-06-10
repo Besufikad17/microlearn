@@ -1,4 +1,4 @@
-const instructor = require('../models/instructorModel');
+const Instructor = require('../models/instructorModel');
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -15,7 +15,7 @@ instructorControllers.login = async (req, res) => {
         return res.status(400).json({ msg: 'Please enter all fields' });
     }
 
-    instructor.findOne({ name }).exec((err, instructor) => {
+    Instructor.findOne({ name }).exec((err, instructor) => {
         if (err) {
             res.status(400).send({ message: err });
             res.status(500).send({ message: err });
@@ -45,12 +45,12 @@ instructorControllers.add = async (req, res) => {
     }
 
     //checking for existing instructor
-    instructor.findOne({ name })
+    Instructor.findOne({ name })
         .then(instructor => {
             if (instructor) {
                 return res.status(400).json({ msg: 'instructor already exists!!' });
             } else {
-                const newAcccount = new instructor({
+                const newAcccount = new Instructor({
                     name,
                     sirname,
                     profilePictureUrl,
@@ -84,7 +84,7 @@ instructorControllers.add = async (req, res) => {
 }
 
 instructorControllers.getinstructorById = async (req, res) => {
-    instructor.findOne({ _id: { $in: mongoose.Types.ObjectId(req.params.id) } }, function (err, instructor) {
+    Instructor.findOne({ _id: { $in: mongoose.Types.ObjectId(req.params.id) } }, function (err, instructor) {
         if (instructor) {
             res.json(instructor)
         }
@@ -96,7 +96,7 @@ instructorControllers.getinstructorById = async (req, res) => {
 }
 
 instructorControllers.getAllinstructors = async (req, res) => {
-    instructor.find({}, function (err, instructors) {
+    Instructor.find({}, function (err, instructors) {
         if (instructors) {
             res.json(instructors)
         }
@@ -110,7 +110,7 @@ instructorControllers.getinstructorByName = async (req, res) => {
 
     const { name } = req.body;
 
-    instructor.find({ name }, function (err, instructor) {
+    Instructor.find({ name }, function (err, instructor) {
         if (instructor) {
             res.send(instructor)
         }
@@ -132,7 +132,7 @@ instructorControllers.updateinstructor = async (req, res) => {
     // }
 
     //checking for existing instructor
-    instructor.findOne({ _id: { $in: mongoose.Types.ObjectId(req.params.id) } })
+    Instructor.findOne({ _id: { $in: mongoose.Types.ObjectId(req.params.id) } })
         .then(instructor => {
             if (instructor) {
                 instructor.name = name;
@@ -152,9 +152,8 @@ instructorControllers.updateinstructor = async (req, res) => {
                         name: instructor.name,
                         password: password,
                         profilePictureUrl: instructor.profilePictureUrl,
-                        enrolledCourse: instructor.enrolledCourse,
-                        wishList: instructor.wishList,
-                        achievments: instructor.achievments,
+                        givenCourseList: instructor.givenCourseList,
+                        title: instructor.title,
                         isVerified: instructor.isVerified,
                         role: instructor.role
                     }
@@ -169,7 +168,7 @@ instructorControllers.updateinstructor = async (req, res) => {
 }
 
 instructorControllers.deleteinstructor = async (req, res) => {
-    instructor.findByIdAndDelete(req.params.id, (error, data) => {
+    Instructor.findByIdAndDelete(req.params.id, (error, data) => {
         if (error) {
             console.log(err);
             return res.status(400).json({ msg: "something went wrong!!", details: err })
@@ -179,44 +178,21 @@ instructorControllers.deleteinstructor = async (req, res) => {
     })
 }
 
-instructorControllers.addWishlist = async(req, res) => {
-
-    const { wishlist } = req.body;
-
-    instructor.findOne({ _id: { $in: mongoose.Types.ObjectId(req.params.id) } }, function (err, instructor) {
-        if (instructor) {
-            var arr = instructor.wishList;
-            arr.push(wishlist);
-            instructor.wishList = arr;
-            instructor.save();
-            res.json(instructor)
-        }
-
-        if (err) {
-            res.json(err)
-        }
-    })
-}
-
-instructorControllers.getWishlist = async(req, res) => {
-    instructor.findOne({ _id: { $in: mongoose.Types.ObjectId(req.params.id) } }, function (err, instructor) {
-        if (instructor) {
-            res.json(instructor.wishList)
-        }
-
-        if (err) {
-            res.json(err)
-        }
-    })
-}
 
 instructorControllers.addCourse = async(req, res) => {
 
-    instructor.findOne({ _id: { $in: mongoose.Types.ObjectId(req.params.id) } }, function (err, instructor) {
+    const genRanHex = size => [...Array(size)].map(() => Math.floor(Math.random() * 16).toString(16)).join('');
+
+    const _id_ = genRanHex(8);
+
+    Instructor.findOne({ _id: { $in: mongoose.Types.ObjectId(req.params.id) } }, function (err, instructor) {
         if (instructor) {
-            var arr = instructor.enrolledCourse
-            arr.push(req.body.course)
-            instructor.enrolledCourse = arr;
+            var obj = req.body.course;
+            obj.id = _id_;
+
+            var arr = instructor.givenCourseList
+            arr.push(obj)
+            instructor.givenCourseList = arr;
             instructor.save();
             res.json(instructor)
         }
@@ -227,28 +203,93 @@ instructorControllers.addCourse = async(req, res) => {
     })
 }
 
-instructorControllers.dropCourse = async(req, res) => {
+instructorControllers.getUploadedCourses = async(req, res) => {
+
+    Instructor.findOne({_id: {$in: mongoose.Types.ObjectId(req.params.id)}}, function(err, instructor){
+        if(instructor){
+            res.json(instructor.givenCourseList)
+        }
+
+        if(err){
+            res.json(err);
+        }
+    })
+}
+
+instructorControllers.getUploadedCourseByTitle = async(req, res) => {
 
     const { title } = req.body;
 
-    if(!title){
-        return res.status(400).json({ msg: "please enter all fields!!"})
-    }
-
-    instructor.findOne({ _id: { $in: mongoose.Types.ObjectId(req.params.id) } }, function (err, instructor) {
-        if (instructor) {
-            var courses = instructor.enrolledCourse;
-            var isRemoved = false;
-            courses.map(c => {
+    Instructor.findOne({_id: {$in: mongoose.Types.ObjectId(req.params.id)}}, function(err, instructor){
+        if(instructor){
+            var arr = instructor.givenCourseList;
+            var isFound = false;
+            arr.map(c => {
                 if(c.title === title){
-                    courses.pop(c);
-                    isRemoved = !isRemoved;
-                    instructor.enrolledCourse = courses;
+                    isFound = !isFound;
+                    res.json(c);
+                }
+            })
+
+            if(!isFound){
+                return res.status(400).json({ msg: "course not in the list!!"})
+            }
+        }
+
+        if(err){
+            res.json(err);
+        }
+    })
+}
+
+instructorControllers.getUploadedCourseById = async(req, res) => {
+
+    const { id } = req.body;
+
+    Instructor.findOne({_id: {$in: mongoose.Types.ObjectId(req.params.id)}}, function(err, instructor){
+        if(instructor){
+            var arr = instructor.givenCourseList;
+            var isFound = false;
+            arr.map(c => {
+                if(c.id === id){
+                    isFound = !isFound;
+                    res.json(c);
+                }
+            })
+
+            if(!isFound){
+                return res.status(400).json({ msg: "course not in the list!!"})
+            }
+        }
+
+        if(err){
+            res.json(err);
+        }
+    })
+}
+
+
+instructorControllers.updateCourse = async(req, res) => {
+
+    const { id, title, estimatedHours, backDropPictureUrl, coverPictureUrl, chapters } = req.body;
+
+    Instructor.findOne({ _id: { $in: mongoose.Types.ObjectId(req.params.id) } }, function (err, instructor) {
+        if (instructor) {
+            var arr = instructor.givenCourseList;
+            var isFound = false;
+            arr.map(c => {
+                if(c.id === id){
+                    var name = c.instructor;
+                    var obj = {id, title, estimatedHours, backDropPictureUrl, coverPictureUrl, name , chapters}
+                    arr.pop(c);
+                    arr.push(obj);
+                    isFound = !isFound;
+                    instructor.givenCourseList = arr;
                     instructor.save();
                 }
             })
 
-            if(isRemoved){
+            if(isFound){
                 res.json(instructor)
             }else{
                 return res.status(400).json({ msg: "course not in the list!!"})

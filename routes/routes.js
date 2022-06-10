@@ -1,5 +1,6 @@
 const userControllers = require('../controllers/userController');
 const instructorControllers = require('../controllers/instructorController');
+const courseControllers = require('../controllers/courseController');
 const express = require('express');
 const router = express.Router();
 const auth_middleware = require('../middleware/auth');
@@ -19,6 +20,8 @@ router.get('/user/:id', userControllers.getUserById);
 
 router.get('/get_user', userControllers.getUserByName);
 
+router.get('/api/enrolled_courses/:id', userControllers.getEnrolledCourses);
+
 router.put('/update_user/:id', userControllers.updateUser);
 
 router.delete('/remove/:id', userControllers.deleteUser);
@@ -27,7 +30,7 @@ router.post('/add_wishlist/:id', userControllers.addWishlist);
 
 router.get('/wishlist/:id', userControllers.getWishlist);
 
-router.post('/courses/:id', userControllers.addCourse);
+router.post('/add_course/:id', userControllers.addCourse);
 
 router.put('/drop_course/:id', userControllers.dropCourse);
 
@@ -60,5 +63,23 @@ router.put('/instructor/update_course/:id', instructorControllers.updateCourse);
 
 router.delete('/remove_instructor/:id', instructorControllers.deleteinstructor);
 
+
+// courses endpoint
+
+router.get('/courses', courseControllers.getAllCourses);
+
+router.get('/course/:id', courseControllers.getCourseById);
+
+router.get('/course', courseControllers.getCourseByTitle);
+
+router.get('/get_course/:id', courseControllers.getCoursesByInstructorId);
+
+router.post('/add_coupon/:id', courseControllers.addCoupon);
+
+router.get('/coupon/:id', courseControllers.getCoupon);
+
+router.put('/update_coupon/:id', courseControllers.updateCoupon);
+
+router.delete('/delete_coupon/:id', courseControllers.deleteCoupon);
 
 module.exports = router;

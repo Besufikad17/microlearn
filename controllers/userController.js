@@ -82,6 +82,18 @@ userControllers.add = async (req, res) => {
         })
 }
 
+userControllers.getEnrolledCourses = async(req, res) => {
+    User.findOne({ _id: { $in: mongoose.Types.ObjectId(req.params.id) } }, function (err, user) {
+        if (user) {
+            res.json(user.enrolledCourse)
+        }
+
+        if (err) {
+            res.json(err)
+        }
+    })
+}
+
 userControllers.getUserById = async (req, res) => {
     User.findOne({ _id: { $in: mongoose.Types.ObjectId(req.params.id) } }, function (err, user) {
         if (user) {
@@ -123,12 +135,6 @@ userControllers.getUserByName = async (req, res) => {
 
 userControllers.updateUser = async (req, res) => {
     const { name, profilePictureUrl, password } = req.body;
-
-    //simpleation
-    // if (!name  || !id || !profilePictureUrl || !password) {
-    //     console.log('Please enter all fields');
-    //     return res.status(400).json({ msg: 'Please enter all fields' });
-    // }
 
     //checking for existing user
     User.findOne({ _id: { $in: mongoose.Types.ObjectId(req.params.id) } })

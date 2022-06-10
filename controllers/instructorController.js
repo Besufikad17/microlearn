@@ -1,4 +1,5 @@
 const Instructor = require('../models/instructorModel');
+const Course = require('../models/courseModel');
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -181,14 +182,13 @@ instructorControllers.deleteinstructor = async (req, res) => {
 
 instructorControllers.addCourse = async(req, res) => {
 
-    const genRanHex = size => [...Array(size)].map(() => Math.floor(Math.random() * 16).toString(16)).join('');
-
-    const _id_ = genRanHex(8);
-
     Instructor.findOne({ _id: { $in: mongoose.Types.ObjectId(req.params.id) } }, function (err, instructor) {
         if (instructor) {
-            var obj = req.body.course;
-            obj.id = _id_;
+
+            const  newCourse = new Course(req.body)
+            newCourse.save();
+            var obj = req.body;
+            obj.id = newCourse.id;
 
             var arr = instructor.givenCourseList
             arr.push(obj)
@@ -271,16 +271,29 @@ instructorControllers.getUploadedCourseById = async(req, res) => {
 
 instructorControllers.updateCourse = async(req, res) => {
 
-    const { id, title, estimatedHours, backDropPictureUrl, coverPictureUrl, chapters } = req.body;
+    const { id, title, estimatedHours, backDropPictureUrl, coverPictureUrl, chapters, price } = req.body;
 
     Instructor.findOne({ _id: { $in: mongoose.Types.ObjectId(req.params.id) } }, function (err, instructor) {
         if (instructor) {
             var arr = instructor.givenCourseList;
             var isFound = false;
+
+            Course.findOne({_id: {$in: mongoose.Types.ObjectId(id)}}, function(err, course){
+                if(course){
+                    course.title = title;
+                    course.estimatedHours = estimatedHours;
+                    course.backDropPictureUrl = backDropPictureUrl;
+                    course.coverPictureUrl = coverPictureUrl;
+                    course.chapters = chapters;
+                    course.price = price;
+                    course.save();
+                }
+            })
+
             arr.map(c => {
                 if(c.id === id){
                     var name = c.instructor;
-                    var obj = {id, title, estimatedHours, backDropPictureUrl, coverPictureUrl, name , chapters}
+                    var obj = {id, title, estimatedHours, backDropPictureUrl, coverPictureUrl, name , chapters, price}
                     arr.pop(c);
                     arr.push(obj);
                     isFound = !isFound;

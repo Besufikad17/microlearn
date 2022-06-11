@@ -5,6 +5,9 @@
   "main": "index.js",
   "author": "Besufikad",
   "license": "MIT",
+  "scripts": {
+    "start": "nodemon index.js"
+  },
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "config": "^3.3.7",

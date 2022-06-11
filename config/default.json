@@ -1,4 +1,5 @@
 {
     "localMongoURI": "mongodb://localhost:27017/MicroLearn",
+    "hostedMongoURI": "mongodb+srv://heisnberg17:haM1cMYiJbamwAB2@cluster0.90f0o.mongodb.net/?retryWrites=true&w=majority",
     "jwtSecret": "microlearn_jwt"
 }

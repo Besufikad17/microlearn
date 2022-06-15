@@ -8,7 +8,7 @@ const routes = require('./routes/routes');
 const PORT = process.env.PORT || 5000;
 const bodyParser = require('body-parser')
 
-mongoose.connect(config.hostedMongoURI, { useNewUrlParser: true });
+mongoose.connect(config.localMongoURI, { useNewUrlParser: true });
 
 mongoose.connection.on('error', (err) => {
     console.log('Error in the database:', err);

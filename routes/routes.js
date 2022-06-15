@@ -1,6 +1,7 @@
 const userControllers = require('../controllers/userController');
 const instructorControllers = require('../controllers/instructorController');
 const courseControllers = require('../controllers/courseController');
+const utilControllers = require('../controllers/utilController');
 const videoItemControllers = require('../controllers/videoItemController');
 const express = require('express');
 const router = express.Router();
@@ -88,5 +89,13 @@ router.delete('/delete_coupon/:id', courseControllers.deleteCoupon);
 router.get('/videoItems', videoItemControllers.getAllVideoItems);
 
 router.get('/videoItem/:id', videoItemControllers.getVideoItemById);
+
+// utility routes
+
+router.get('/cards', utilControllers.getCards);
+
+router.post('/recharge/:id', utilControllers.recharge);
+
+router.post('/enroll/:id', utilControllers.enroll);
 
 module.exports = router;

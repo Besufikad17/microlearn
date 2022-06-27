@@ -43,7 +43,11 @@ router.post('/instructor_signup', instructorControllers.add);
 
 router.post('/instructor_login', instructorControllers.login);
 
-router.post('/courses_instructor/:id', instructorControllers.addCourse);
+router.post('/courses_instructor/', instructorControllers.addCourse);
+
+router.post('/add_chapter', instructorControllers.addChapter);
+
+router.post('/add_item', instructorControllers.addItem);
 
 router.get('/instructors', instructorControllers.getAllinstructors);
 

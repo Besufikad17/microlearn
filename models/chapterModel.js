@@ -5,7 +5,7 @@ const chapterSchema  = new mongoose.Schema({
         type: String,
         required: true
     },
-    estimatedHours: {
+    estimatedHour: {
         type: String,
         required: true
     },

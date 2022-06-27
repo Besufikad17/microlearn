@@ -128,12 +128,6 @@ instructorControllers.getinstructorByName = async (req, res) => {
 instructorControllers.updateinstructor = async (req, res) => {
     const { name, profilePictureUrl, password } = req.body;
 
-    //simpleation
-    // if (!name  || !id || !profilePictureUrl || !password) {
-    //     console.log('Please enter all fields');
-    //     return res.status(400).json({ msg: 'Please enter all fields' });
-    // }
-
     //checking for existing instructor
     Instructor.findOne({ _id: { $in: mongoose.Types.ObjectId(req.params.id) } })
         .then(instructor => {
@@ -186,34 +180,9 @@ instructorControllers.addCourse = async(req, res) => {
 
     Instructor.findOne({ _id: { $in: mongoose.Types.ObjectId(req.params.id) } }, function (err, instructor) {
         if (instructor) {
-            const chapters = req.body.chapters;
-            var count = 0;
-            chapters.map(chapter =>{
-                const {title, estimatedHours, video_links} = chapter;
-                const vid_title = title + ' ' + count;
-                const newChapter = new Chapter(chapter);
-               
-                video_links.map(video_link => {
-                    const url = video_link;
-                    const chapter = title;
-                    console.log(vid_title, title, video_link);
-                    const newVideoItems = new VideoItem({vid_title, chapter, url});
-                    newVideoItems.save();
-                })
-                newChapter.save();
-                count++;
-            })
-
-            const  newCourse = new Course(req.body)
+            const newCourse = new Course(req.body);
             newCourse.save();
-            var obj = req.body;
-            obj.id = newCourse.id;
-
-            var arr = instructor.givenCourseList
-            arr.push(obj)
-            instructor.givenCourseList = arr;
-            instructor.save();
-            res.json(instructor)
+            res.json(instructor);
         }
 
         if (err) {
@@ -221,6 +190,22 @@ instructorControllers.addCourse = async(req, res) => {
         }
     })
 }
+
+instructorControllers.addChapter = async(req, res) => {
+
+   const newChapter = new Chapter(req.body);
+   newChapter.save();
+   res.json(newChapter);
+
+}
+
+instructorControllers.addItem = async(req, res) => {
+
+    const newItem = new VideoItem(req.body);
+    newItem.save();
+    res.json(newItem);
+}
+
 
 instructorControllers.getUploadedCourses = async(req, res) => {
 
@@ -234,6 +219,7 @@ instructorControllers.getUploadedCourses = async(req, res) => {
         }
     })
 }
+
 
 instructorControllers.getUploadedCourseByTitle = async(req, res) => {
 

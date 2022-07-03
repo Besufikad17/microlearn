@@ -13,10 +13,6 @@ const instructorSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    givenCourseList : {
-        type: Array,
-        default : []
-    },
     title: {
         type: String,
         required: true

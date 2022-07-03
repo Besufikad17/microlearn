@@ -55,11 +55,6 @@ router.get('/instructor/:id', instructorControllers.getinstructorById);
 
 router.get('/instructor', instructorControllers.getinstructorByName);
 
-router.get('/instructor/courses/:id', instructorControllers.getUploadedCourses);
-
-router.get('/instructor/course/:id', instructorControllers.getUploadedCourseByTitle);
-
-router.get('/instructor/course_id/:id', instructorControllers.getUploadedCourseById);
 
 // //router.post('/instructor', auth_middleware.auth, auth.getCurrentUser);
 
